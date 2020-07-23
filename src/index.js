@@ -1,5 +1,7 @@
+const server = require('./server');
 const mongoose = require('mongoose');
-const app = require('./app');
+
+// const app = require('./app');
 
 const {
   PORT,
@@ -22,9 +24,7 @@ async function main() {
     // console.log("Connected to mongo");
     // Run the http server
     const port = PORT || 8000;
-    app.listen(port, () => {
-      console.log(`Listening: http://localhost:${port}`);
-    });
+    server.listen(port).then(({ url }) => console.log(`Server running at ${ url } `));
   } catch (err) {
     // Emit the error and stop the server
     console.error(err);

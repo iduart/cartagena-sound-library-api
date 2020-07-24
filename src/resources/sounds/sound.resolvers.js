@@ -17,9 +17,9 @@ const soundResolver = {
       newSound.save();
       return newSound;
     },
-    removeSound: async (_, { input }) => {
-        const response = await SoundModel.remove({ _id: input.id });
-        return response.deletedCount;
+    async removeSound(_, { input }) {
+      const response = await SoundModel.remove({ _id: input.id });
+      return response.deletedCount;
     }
   }
 }

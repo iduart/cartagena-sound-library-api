@@ -8,7 +8,7 @@ const userType = gql`
     updatedAt: String!
   }
 
-  type Query {
+  extend type Query {
     me: User
   }
 `;

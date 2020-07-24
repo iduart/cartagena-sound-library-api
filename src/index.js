@@ -1,3 +1,4 @@
+require('dotenv').config();
 const server = require('./server');
 const mongoose = require('mongoose');
 
@@ -14,15 +15,15 @@ const {
 // Initialize and connect DB (mongo)
 async function main() {
   try {
-    // await mongoose.connect(
-    //   `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DATABASE}?retryWrites=true`,
-    //   {
-    //     keepAliveInitialDelay: 3000,
-    //     useNewUrlParser: true
-    //   }
-    // );
-    // console.log("Connected to mongo");
-    // Run the http server
+    await mongoose.connect(
+      `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DATABASE}?retryWrites=true`,
+      {
+        keepAliveInitialDelay: 3000,
+        useNewUrlParser: true
+      }
+    );
+    console.log("Connected to mongo");
+
     const port = PORT || 8000;
     server.listen(port).then(({ url }) => console.log(`Server running at ${ url } `));
   } catch (err) {

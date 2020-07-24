@@ -13,6 +13,21 @@ const soundType = gql`
   extend type Query {
     sounds: [Sound]
   }
+
+  input addSoundInput {
+    name: String!
+    sound: String!
+    thumbnail: String!
+  }
+
+  input removeSoundInput {
+    id: String!
+  }
+
+  extend type Mutation {
+    createSound(input: addSoundInput): Sound!
+    removeSound(input: removeSoundInput): String
+  }
 `;
 
 module.exports = soundType;

@@ -5,6 +5,8 @@ const soundType = gql`
     _id: ID!
     name: String!
     sound: String!
+    tags: [String]
+    author: String!
     thumbnail: String
     createdAt: String!
     updatedAt: String!
@@ -18,6 +20,8 @@ const soundType = gql`
     name: String!
     sound: String!
     thumbnail: String!
+    tags: [String]
+    author: String
   }
 
   input removeSoundInput {

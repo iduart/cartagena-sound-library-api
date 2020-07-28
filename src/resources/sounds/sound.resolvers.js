@@ -2,17 +2,20 @@ const SoundModel = require('./sound.model');
 
 const soundResolver = {
   Query: {
-    sounds(){
-      return []
+    async sounds() {
+      const sounds = await SoundModel.find();
+      return sounds;
     }
   },
   Mutation: {
     createSound(_, { input }) {
-      const { name, sound, thumbnail } = input;
+      const { name, sound, thumbnail, tags = [], author } = input;
       const newSound = new SoundModel({ 
         name, 
         sound,
-        thumbnail
+        thumbnail,
+        tags,
+        author,
       });
       newSound.save();
       return newSound;

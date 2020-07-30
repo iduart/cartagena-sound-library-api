@@ -1,6 +1,21 @@
 const { gql } = require('apollo-server');
 
 const soundType = gql`
+  input addSoundInput {
+    name: String!
+    sound: String!
+    thumbnail: String!
+    tags: [String]
+    author: String
+  }
+
+  input filtersInput {
+    id: String
+    name: String
+    author: String
+    search: String
+  }
+
   type Sound {
     _id: ID!
     name: String!
@@ -13,24 +28,12 @@ const soundType = gql`
   }
 
   extend type Query {
-    sounds: [Sound]
-  }
-
-  input addSoundInput {
-    name: String!
-    sound: String!
-    thumbnail: String!
-    tags: [String]
-    author: String
-  }
-
-  input removeSoundInput {
-    id: String!
+    sounds(input: filtersInput): [Sound]
   }
 
   extend type Mutation {
-    createSound(input: addSoundInput): Sound!
-    removeSound(input: removeSoundInput): String
+    createSound(input: addSoundInput!): Sound!
+    removeSound(id: String!): String
   }
 `;
 

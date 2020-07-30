@@ -2,8 +2,19 @@ const SoundModel = require('./sound.model');
 
 const soundResolver = {
   Query: {
-    async sounds() {
-      const sounds = await SoundModel.find();
+    async sounds(_, { input = {} }) {
+      let filters = {};
+
+      if (input.search) {
+        filters = {
+          ...filters,
+          $text: {
+            $search: input.search
+          }
+        }
+      }
+
+      const sounds = await SoundModel.find(filters);
       return sounds;
     }
   },
@@ -20,8 +31,8 @@ const soundResolver = {
       newSound.save();
       return newSound;
     },
-    async removeSound(_, { input }) {
-      const response = await SoundModel.remove({ _id: input.id });
+    async removeSound(_, { id }) {
+      const response = await SoundModel.remove({ _id: id });
       return response.deletedCount;
     }
   }

@@ -17,7 +17,8 @@ async function main() {
       `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DATABASE}?retryWrites=true`,
       {
         keepAliveInitialDelay: 3000,
-        useNewUrlParser: true
+        useNewUrlParser: true,
+        useUnifiedTopology: true
       }
     );
     console.log("Connected to mongo");

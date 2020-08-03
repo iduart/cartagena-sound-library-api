@@ -2,27 +2,30 @@ const SoundModel = require('./sound.model');
 
 const soundResolver = {
   Query: {
-    async sounds(_, { input = {} }) {
-      let filters = {};
+    async sounds(_, args) {
+      const { filters } = args;
+      let formattedFilters = {};
+      const limit = 20;
+      const offset = args.offset || 0;
 
-      if (input.search) {
-        filters = {
-          ...filters,
+      if (filters.search) {
+        formattedFilters = {
+          ...formattedFilters,
           $text: {
-            $search: input.search
+            $search: filters.search,
           }
         }
       }
 
-      const sounds = await SoundModel.find(filters);
+      const sounds = await SoundModel.find(formattedFilters).limit(limit).skip(offset);
       return sounds;
     }
   },
   Mutation: {
     createSound(_, { input }) {
       const { name, sound, thumbnail, tags = [], author } = input;
-      const newSound = new SoundModel({ 
-        name, 
+      const newSound = new SoundModel({
+        name,
         sound,
         thumbnail,
         tags,

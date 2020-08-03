@@ -28,7 +28,7 @@ const soundType = gql`
   }
 
   extend type Query {
-    sounds(input: filtersInput): [Sound]
+    sounds(filters: filtersInput, offset: Int! ): [Sound]
   }
 
   extend type Mutation {

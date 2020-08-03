@@ -2,8 +2,6 @@ require('dotenv').config();
 const server = require('./server');
 const mongoose = require('mongoose');
 
-// const app = require('./app');
-
 const {
   PORT,
   MONGO_HOST,

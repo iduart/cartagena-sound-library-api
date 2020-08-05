@@ -6,6 +6,7 @@ const SoundSchema = Schema({
   thumbnail: String,
   tags: [String],
   author: String,
+  private: Boolean,
   uploadedBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',

@@ -16,7 +16,6 @@ const soundResolver = {
           }
         }
       }
-
       const sounds = await SoundModel.find(formattedFilters).limit(limit).skip(offset);
       return sounds;
     }
@@ -35,8 +34,9 @@ const soundResolver = {
       return newSound;
     },
     async removeSound(_, { id }) {
-      const response = await SoundModel.remove({ _id: id });
-      return response.deletedCount;
+      // const response = await SoundModel.remove({ _id: id });
+      // return response.deletedCount;
+      return 'success';
     }
   }
 }

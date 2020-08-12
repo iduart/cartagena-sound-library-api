@@ -16,7 +16,7 @@ const soundResolver = {
           }
         }
       }
-      const sounds = await SoundModel.find(formattedFilters).limit(limit).skip(offset);
+      const sounds = await SoundModel.find(formattedFilters).limit(limit).skip(offset).sort({ createdAt: -1 });
       return sounds;
     }
   },

@@ -1,14 +1,15 @@
 const { gql } = require('apollo-server');
 
 const authType = gql`
-  input credentialsInput {
+  input registerInput {
     name: String!
     username: EmailAddress!
     password: String!
   }
 
   extend type Mutation {
-    register(input: credentialsInput!): String!
+    register(input: registerInput!): String!
+    login(username: String!, password: String!): String!
   }
 `;
 

@@ -6,10 +6,12 @@ const merge = require('lodash.merge');
 const userType = require('./resources/users/user.graphql');
 const authType = require('./resources/auth/auth.graphql');
 const soundType = require('./resources/sounds/sound.graphql');
+const deviceType = require('./resources/devices/devices.graphql');
 // Resolvers
 const userResolver = require('./resources/users/user.resolvers');
 const authResolver = require('./resources/auth/auth.resolvers');
 const soundResolver = require('./resources/sounds/sound.resolvers');
+const deviceResolver = require('./resources/devices/devices.resolvers');
 
 const resolvers = merge(
   {
@@ -18,6 +20,7 @@ const resolvers = merge(
   userResolver,
   authResolver,
   soundResolver,
+  deviceResolver,
 );
 
 /* We can only have one "Query" and one "Mutation"
@@ -40,6 +43,7 @@ const server = new ApolloServer({
     userType,
     authType,
     soundType,
+    deviceType,
   ],
   resolvers,
 });

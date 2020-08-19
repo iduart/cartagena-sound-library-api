@@ -9,7 +9,7 @@ const deviceType = gql`
 
   extend type Query {
     deviceFavoritesSoundsIds(deviceId: String!): [String]!
-    deviceFavoritesSounds(deviceId: String!): [Sound]!
+    deviceFavoritesSounds(deviceId: String!, offset: Int!): [Sound]!
   }
 
   extend type Mutation {

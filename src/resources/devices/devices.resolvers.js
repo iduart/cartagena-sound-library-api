@@ -19,7 +19,10 @@ const deviceResolver = {
       const device = await DeviceModel.findOne({ code: deviceId });
       return device.favorites && device.favorites.length ? device.favorites : [];
     },
-    async deviceFavoritesSounds(_, { deviceId }) {
+    async deviceFavoritesSounds(_, args) {
+      const limit = 20;
+      const offset = args.offset || 0;
+
       const aggregation = [
         {
           "$unwind": "$favorites"
@@ -37,9 +40,11 @@ const deviceResolver = {
         },
         {
           "$match": {
-            "code": deviceId
+            "code": args.deviceId
           }
         },
+        {"$skip": offset },
+        {"$limit": limit }
       ]
       const favoritesSounds = await DeviceModel.aggregate(aggregation);
 

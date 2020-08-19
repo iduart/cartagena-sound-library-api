@@ -10,11 +10,18 @@ const {
   MONGO_DATABASE
 } = process.env;
 
+let mongoConnectionString;
+if (MONGO_USER && MONGO_PASSWORD) {
+  mongoConnectionString = `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DATABASE}?retryWrites=true`;
+} else {
+  mongoConnectionString = `mongodb://${MONGO_HOST}/${MONGO_DATABASE}?retryWrites=true`;
+}
+
 // Initialize and connect DB (mongo)
 async function main() {
   try {
     await mongoose.connect(
-      `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DATABASE}?retryWrites=true`,
+      mongoConnectionString,
       {
         keepAliveInitialDelay: 3000,
         useNewUrlParser: true,

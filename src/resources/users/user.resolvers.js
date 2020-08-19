@@ -2,8 +2,9 @@ const userResolver = {
   Query: {
     me() {
       return {
-        id: '2',
+        _id: '2',
         name: 'Iduart',
+        email: 'iduartdean@gmail.com',
         createdAt: 'ayer',
         updatedAt: 'hoy',
       }

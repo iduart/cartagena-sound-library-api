@@ -22,6 +22,15 @@ const soundResolver = {
   },
   Mutation: {
     createSound(_, { input }) {
+      return {
+        name: "123",
+        sound: "123",
+        thumbnail: "123",
+        tags: [],
+        author: "123",
+      }
+    },
+    createSoundFromAdmin(_, { input }) {
       const { name, sound, thumbnail, tags = [], author } = input;
       const newSound = new SoundModel({
         name,

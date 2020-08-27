@@ -9,12 +9,13 @@ const soundType = gql`
     author: String
   }
 
-  input addSoundInput {
+  input previewSoundInput {
     url: String!
     from: String!
     to: String!
     name: String!
     author: String!
+    deviceId: String!
   }
 
   input filtersInput {
@@ -40,7 +41,7 @@ const soundType = gql`
   }
 
   extend type Mutation {
-    createSound(input: addSoundInput!): Sound!
+    previewSound(input: previewSoundInput!): Sound!
     createSoundFromAdmin(input: addSoundInputFromAdmin!): Sound!
     removeSound(id: String!): String
   }

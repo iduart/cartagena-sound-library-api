@@ -24,7 +24,11 @@
     "dotenv": "^8.2.0",
     "graphql-scalars": "^1.2.6",
     "lodash.merge": "^4.6.2",
-    "mongoose": "^5.9.25"
+    "mongoose": "^5.9.25",
+    "aws-sdk": "^2.738.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "sharp": "^0.25.4",
+    "youtube-dl": "^3.0.2"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"

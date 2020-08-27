@@ -4,8 +4,21 @@ const stream = require('stream');
 const ffmpeg = require('fluent-ffmpeg');
 const sharp = require('sharp');
 const request = require('request');
+const moment = require('moment');
 
 const TEMP_BUCKET_NAME = "cartagena-sound-library-temporary-folder";
+
+const getDuration = (from, to) => {
+  const TIME_FORMAT = 'hh:mm:ss.SS';
+  const fromTime = moment(from, TIME_FORMAT);
+  const toTime = moment(to, TIME_FORMAT);
+  
+  const diff = toTime.diff(fromTime);
+  
+  const duration = moment.duration(diff);
+
+  return duration.asSeconds();
+}
 
 const getVideoUrl = (url) => {
   return new Promise((resolve, reject) => {
@@ -71,7 +84,7 @@ const processAudio = (videoUrl, from = '00:00:00', duration = 7, filename) => ne
 
   const upload = new AWS.S3.ManagedUpload({
     params: {
-      ACL: "public-read-write",
+      ACL: "public-read",
       Bucket: TEMP_BUCKET_NAME,
       Key: filename,
       Body: passtrough,
@@ -95,8 +108,8 @@ async function previewSound(_, { input }) {
   const videoInfo = await getVideoUrl(url);
   const thumbnailUrl = videoInfo.thumbnails[0];
 
-  //get duration substracting to - from 
-  const duration = 7;
+  const duration = getDuration(from, to);
+
   const soundFilename = `${deviceId}.mp3`;
   const thumbnailFilename = `${deviceId}.png`;
 
@@ -104,7 +117,7 @@ async function previewSound(_, { input }) {
   const thumbnailFileData = await processThumbnail(thumbnailUrl, thumbnailFilename);
 
   return {
-    _id: deviceId+'1',
+    _id: deviceId,
     name,
     sound: soundFileData.Location,
     author,

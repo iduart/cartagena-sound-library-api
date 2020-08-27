@@ -20,13 +20,14 @@
   "homepage": "https://github.com/ideanb/smefys-api#readme",
   "dependencies": {
     "apollo-server": "^2.16.0",
+    "aws-sdk": "^2.738.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
+    "fluent-ffmpeg": "^2.1.2",
     "graphql-scalars": "^1.2.6",
     "lodash.merge": "^4.6.2",
+    "moment": "^2.27.0",
     "mongoose": "^5.9.25",
-    "aws-sdk": "^2.738.0",
-    "fluent-ffmpeg": "^2.1.2",
     "sharp": "^0.25.4",
     "youtube-dl": "^3.0.2"
   },

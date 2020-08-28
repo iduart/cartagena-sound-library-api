@@ -12,9 +12,9 @@ const getDuration = (from, to) => {
   const TIME_FORMAT = 'hh:mm:ss.SS';
   const fromTime = moment(from, TIME_FORMAT);
   const toTime = moment(to, TIME_FORMAT);
-  
+
   const diff = toTime.diff(fromTime);
-  
+
   const duration = moment.duration(diff);
 
   return duration.asSeconds();
@@ -30,6 +30,17 @@ const getVideoUrl = (url) => {
     });
   })
 }
+
+const S3Upload = (passtrough, filename) =>
+  new AWS.S3.ManagedUpload({
+    params: {
+      ACL: "public-read",
+      Bucket: TEMP_BUCKET_NAME,
+      Key: filename,
+      Body: passtrough,
+    },
+    partSize: 1024 * 1024 * 10 // 64 MB in bytes
+  });
 
 const processThumbnail = (thumbnailUrl, thumbnailFilename) => new Promise((resolve, reject) => {
   if (!thumbnailUrl || !thumbnailFilename) {
@@ -47,15 +58,7 @@ const processThumbnail = (thumbnailUrl, thumbnailFilename) => new Promise((resol
     .pipe(resizedImage)
     .pipe(passtrough);
 
-  const upload = new AWS.S3.ManagedUpload({
-    params: {
-      ACL: "public-read",
-      Bucket: TEMP_BUCKET_NAME,
-      Key: thumbnailFilename,
-      Body: passtrough,
-    },
-    partSize: 1024 * 1024 * 10 // 64 MB in bytes
-  });
+  const upload = S3Upload(passtrough, thumbnailFilename);
 
   upload.send((err, data) => {
     if (err) {
@@ -82,19 +85,10 @@ const processAudio = (videoUrl, from = '00:00:00', duration = 7, filename) => ne
     .duration(duration)
     .pipe(passtrough);
 
-  const upload = new AWS.S3.ManagedUpload({
-    params: {
-      ACL: "public-read",
-      Bucket: TEMP_BUCKET_NAME,
-      Key: filename,
-      Body: passtrough,
-    },
-    partSize: 1024 * 1024 * 64 // 64 MB in bytes
-  });
+  const upload = S3Upload(passtrough, filename);
 
   upload.send((err, data) => {
     if (err) {
-      console.log(err);
       reject(err);
     } else {
       resolve(data);

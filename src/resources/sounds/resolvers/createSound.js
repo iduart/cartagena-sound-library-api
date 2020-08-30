@@ -101,7 +101,7 @@ const processAudio = (videoUrl, from = '00:00:00', duration = 7, filename, isPre
   });
 })
 
-async function previewSound(_, { input }) {
+async function createSound(_, { input }) {
   const { url, from, to, name, author, deviceId, isPreview } = input;
   let newSound = {};
 
@@ -140,4 +140,4 @@ async function previewSound(_, { input }) {
   }
 }
 
-module.exports = previewSound;
+module.exports = createSound;

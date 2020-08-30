@@ -16,6 +16,7 @@ const soundType = gql`
     name: String!
     author: String!
     deviceId: String!
+    isPreview: Boolean
   }
 
   input filtersInput {

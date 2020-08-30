@@ -5,8 +5,11 @@ const ffmpeg = require('fluent-ffmpeg');
 const sharp = require('sharp');
 const request = require('request');
 const moment = require('moment');
+const SoundModel = require('../sound.model');
 
-const TEMP_BUCKET_NAME = "cartagena-sound-library-temporary-folder";
+const TEMP_BUCKET = "cartagena-sound-library-temporary-folder";
+const SOUNDS_BUCKET = "cartagena-sound-library-sound-list";
+const THUMBNAILS_BUCKET = "cartagena-sound-library-thumbnails";
 
 const getDuration = (from, to) => {
   const TIME_FORMAT = 'hh:mm:ss.SS';
@@ -31,18 +34,18 @@ const getVideoUrl = (url) => {
   })
 }
 
-const S3Upload = (passtrough, filename) =>
+const S3Upload = (passtrough, filename, bucket) =>
   new AWS.S3.ManagedUpload({
     params: {
       ACL: "public-read",
-      Bucket: TEMP_BUCKET_NAME,
+      Bucket: bucket,
       Key: filename,
       Body: passtrough,
     },
     partSize: 1024 * 1024 * 10 // 64 MB in bytes
   });
 
-const processThumbnail = (thumbnailUrl, thumbnailFilename) => new Promise((resolve, reject) => {
+const processThumbnail = (thumbnailUrl, thumbnailFilename, isPreview) => new Promise((resolve, reject) => {
   if (!thumbnailUrl || !thumbnailFilename) {
     return;
   }
@@ -58,7 +61,8 @@ const processThumbnail = (thumbnailUrl, thumbnailFilename) => new Promise((resol
     .pipe(resizedImage)
     .pipe(passtrough);
 
-  const upload = S3Upload(passtrough, thumbnailFilename);
+  const bucket = isPreview ? TEMP_BUCKET : THUMBNAILS_BUCKET;
+  const upload = S3Upload(passtrough, thumbnailFilename, bucket);
 
   upload.send((err, data) => {
     if (err) {
@@ -69,7 +73,7 @@ const processThumbnail = (thumbnailUrl, thumbnailFilename) => new Promise((resol
   });
 })
 
-const processAudio = (videoUrl, from = '00:00:00', duration = 7, filename) => new Promise((resolve, reject) => {
+const processAudio = (videoUrl, from = '00:00:00', duration = 7, filename, isPreview) => new Promise((resolve, reject) => {
   if (!videoUrl || !filename) {
     return;
   }
@@ -85,7 +89,8 @@ const processAudio = (videoUrl, from = '00:00:00', duration = 7, filename) => ne
     .duration(duration)
     .pipe(passtrough);
 
-  const upload = S3Upload(passtrough, filename);
+  const bucket = isPreview ? TEMP_BUCKET : SOUNDS_BUCKET;
+  const upload = S3Upload(passtrough, filename, bucket);
 
   upload.send((err, data) => {
     if (err) {
@@ -97,24 +102,40 @@ const processAudio = (videoUrl, from = '00:00:00', duration = 7, filename) => ne
 })
 
 async function previewSound(_, { input }) {
-  const { url, from, to, name, author, deviceId } = input;
+  const { url, from, to, name, author, deviceId, isPreview } = input;
+  let newSound = {};
+
+  if (!isPreview) {
+    newSound = new SoundModel({
+      name,
+      author,
+      tags: [],
+    });
+  }
 
   const videoInfo = await getVideoUrl(url);
   const thumbnailUrl = videoInfo.thumbnails[0];
 
   const duration = getDuration(from, to);
 
-  const soundFilename = `${deviceId}.mp3`;
-  const thumbnailFilename = `${deviceId}.png`;
+  const soundFilename = newSound._id ? `${newSound._id}.mp3` : `${deviceId}.mp3`;
+  const thumbnailFilename = newSound._id ? `${newSound._id}.png` : `${deviceId}.png`;
 
-  const soundFileData = await processAudio(videoInfo.url, from, duration, soundFilename);
-  const thumbnailFileData = await processThumbnail(thumbnailUrl, thumbnailFilename);
+  const soundFileData = await processAudio(videoInfo.url, from, duration, soundFilename, isPreview);
+  const thumbnailFileData = await processThumbnail(thumbnailUrl, thumbnailFilename, isPreview);
+
+  if (newSound._id) {
+    newSound.sound = soundFileData.Location;
+    newSound.thumbnail = thumbnailFileData.Location;
+    newSound.save();
+  }
 
   return {
-    _id: deviceId,
+    _id: newSound._id || deviceId,
     name,
     sound: soundFileData.Location,
     author,
+    tags: [],
     thumbnail: thumbnailFileData.Location,
   }
 }

@@ -1,4 +1,5 @@
 const SoundModel = require('./sound.model');
+const createSound = require('./resolvers/createSound');
 
 const soundResolver = {
   Query: {
@@ -21,7 +22,8 @@ const soundResolver = {
     }
   },
   Mutation: {
-    createSound(_, { input }) {
+    createSound,
+    createSoundFromAdmin(_, { input }) {
       const { name, sound, thumbnail, tags = [], author } = input;
       const newSound = new SoundModel({
         name,

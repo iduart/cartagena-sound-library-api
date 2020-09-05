@@ -105,6 +105,12 @@ async function createSound(_, { input }) {
   const { url, from, to, name, author, deviceId, isPreview } = input;
   let newSound = {};
 
+  const duration = getDuration(from, to);
+
+  if (!duration || duration > 7 || duration < 0) {
+    throw Error(`Invalid Duration ${duration}`);
+  }
+
   if (!isPreview) {
     newSound = new SoundModel({
       name,
@@ -115,8 +121,6 @@ async function createSound(_, { input }) {
 
   const videoInfo = await getVideoUrl(url);
   const thumbnailUrl = videoInfo.thumbnails[0];
-
-  const duration = getDuration(from, to);
 
   const soundFilename = newSound._id ? `${newSound._id}.mp3` : `${deviceId}.mp3`;
   const thumbnailFilename = newSound._id ? `${newSound._id}.png` : `${deviceId}.png`;

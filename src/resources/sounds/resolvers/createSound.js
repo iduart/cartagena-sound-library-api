@@ -7,9 +7,7 @@ const request = require('request');
 const moment = require('moment');
 const SoundModel = require('../sound.model');
 
-const TEMP_BUCKET = "cartagena-sound-library-temporary-folder";
-const SOUNDS_BUCKET = "cartagena-sound-library-sound-list";
-const THUMBNAILS_BUCKET = "cartagena-sound-library-thumbnails";
+const { TEMP_BUCKET, SOUNDS_BUCKET, THUMBNAILS_BUCKET } = process.env;
 
 const getDuration = (from, to) => {
   const TIME_FORMAT = 'hh:mm:ss.SS';

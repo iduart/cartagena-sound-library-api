@@ -24,6 +24,7 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "fluent-ffmpeg": "^2.1.2",
+    "graphql": "^15.5.0",
     "graphql-scalars": "^1.2.6",
     "lodash.merge": "^4.6.2",
     "moment": "^2.27.0",

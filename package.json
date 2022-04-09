@@ -27,7 +27,7 @@
     "graphql": "^15.5.0",
     "graphql-scalars": "^1.2.6",
     "lodash.merge": "^4.6.2",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "mongoose": "^5.9.25",
     "request": "^2.88.2",
     "sharp": "^0.25.4",

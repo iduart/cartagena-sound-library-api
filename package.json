@@ -30,7 +30,7 @@
     "moment": "^2.27.0",
     "mongoose": "^5.9.25",
     "request": "^2.88.2",
-    "sharp": "^0.25.4",
+    "sharp": "^0.30.5",
     "youtube-dl": "^3.0.2"
   },
   "devDependencies": {

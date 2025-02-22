@@ -1,5 +1,6 @@
 const youtubedl = require("youtube-dl-exec");
-const AWS = require("aws-sdk");
+const { S3Client } = require("@aws-sdk/client-s3");
+const { Upload } = require("@aws-sdk/lib-storage");
 const stream = require("stream");
 const ffmpeg = require("fluent-ffmpeg");
 const sharp = require("sharp");
@@ -7,7 +8,21 @@ const request = require("request");
 const moment = require("moment");
 const SoundModel = require("../sound.model");
 
-const { TEMP_BUCKET, SOUNDS_BUCKET, THUMBNAILS_BUCKET } = process.env;
+const {
+  TEMP_BUCKET,
+  SOUNDS_BUCKET,
+  THUMBNAILS_BUCKET,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+} = process.env;
+
+const s3Client = new S3Client({
+  region: "us-east-2",
+  credentials: {
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  },
+});
 
 const getDuration = (from, to) => {
   const TIME_FORMAT = "hh:mm:ss.SS";
@@ -21,86 +36,87 @@ const getDuration = (from, to) => {
   return duration.asSeconds();
 };
 
-const getVideoUrl = (url) => {
-  return new Promise((resolve, reject) => {
-    youtubedl.getInfo(url, (err, info) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(info);
-    });
-  });
+const getVideoInfo = async (url) => {
+  return youtubedl(url, { dumpSingleJson: true });
 };
 
-const S3Upload = (passtrough, filename, bucket) =>
-  new AWS.S3.ManagedUpload({
+async function uploadToS3(stream, filename, bucket) {
+  const parallelUploads3 = new Upload({
+    client: s3Client,
     params: {
-      ACL: "public-read",
       Bucket: bucket,
       Key: filename,
-      Body: passtrough,
+      Body: stream,
+      ACL: "public-read",
     },
-    partSize: 1024 * 1024 * 10, // 64 MB in bytes
+    partSize: 1024 * 1024 * 10, // 10 MB parts
   });
+  return parallelUploads3.done();
+}
 
 const processThumbnail = (thumbnailUrl, thumbnailFilename, isPreview) =>
   new Promise((resolve, reject) => {
     if (!thumbnailUrl || !thumbnailFilename) {
-      return;
+      return reject(new Error("Missing thumbnailUrl or thumbnailFilename"));
     }
 
-    const passtrough = new stream.PassThrough();
-
+    const passThrough = new stream.PassThrough();
     const resizedImage = sharp().resize(74, 74).png();
 
-    request(thumbnailUrl).pipe(resizedImage).pipe(passtrough);
+    // Attach error listeners to catch stream errors
+    resizedImage.on("error", (err) => {
+      console.error("Sharp error:", err);
+      reject(err);
+    });
+    passThrough.on("error", (err) => {
+      console.error("PassThrough error:", err);
+      reject(err);
+    });
+
+    request(thumbnailUrl)
+      .on("error", reject)
+      .pipe(resizedImage)
+      .pipe(passThrough);
 
     const bucket = isPreview ? TEMP_BUCKET : THUMBNAILS_BUCKET;
-    const upload = S3Upload(passtrough, thumbnailFilename, bucket);
 
-    upload.send((err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
+    uploadToS3(passThrough, thumbnailFilename, bucket)
+      .then(resolve)
+      .catch(reject);
   });
 
-const processAudio = (
-  videoUrl,
+const processAudio = async (
+  audioUrl,
   from = "00:00:00",
   duration = 7,
   filename,
   isPreview
-) =>
-  new Promise((resolve, reject) => {
-    if (!videoUrl || !filename) {
-      return;
-    }
+) => {
+  if (!audioUrl || !filename) {
+    throw new Error("Missing videoUrl or filename");
+  }
 
-    const passtrough = new stream.PassThrough();
+  // Create a PassThrough stream to pipe ffmpeg output into.
+  const passThrough = new stream.PassThrough();
 
-    ffmpeg()
-      .input(videoUrl)
-      .noVideo()
-      .format("mp3")
-      .audioCodec("libmp3lame")
-      .seekInput(from)
-      .duration(duration)
-      .pipe(passtrough);
+  ffmpeg(audioUrl)
+    .setStartTime(from)
+    .setDuration(duration)
+    .format("mp3")
+    .audioCodec("libmp3lame")
+    .on("end", () => {
+      console.log("Segment extracted successfully.");
+    })
+    .on("error", (err) => {
+      console.error("Error processing audio segment:", err);
+      passThrough.destroy(err);
+    })
+    .writeToStream(passThrough, { end: true });
 
-    const bucket = isPreview ? TEMP_BUCKET : SOUNDS_BUCKET;
-    const upload = S3Upload(passtrough, filename, bucket);
+  const bucket = isPreview ? TEMP_BUCKET : SOUNDS_BUCKET;
 
-    upload.send((err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
+  return await uploadToS3(passThrough, filename, bucket);
+};
 
 async function createSound(_, { input }) {
   const { url, from, to, name, author, deviceId, isPreview } = input;
@@ -120,23 +136,31 @@ async function createSound(_, { input }) {
     });
   }
 
-  const videoInfo = await getVideoUrl(url);
+  const videoInfo = await getVideoInfo(url);
   const thumbnailUrl = videoInfo.thumbnails[0];
 
   const soundFilename = newSound._id
     ? `${newSound._id}.mp3`
     : `${deviceId}.mp3`;
+
   const thumbnailFilename = newSound._id
     ? `${newSound._id}.png`
     : `${deviceId}.png`;
 
+  const audioFormat = videoInfo.formats.find((f) => f.format_id === "140");
+  if (!audioFormat) {
+    throw new Error("Audio-only format (140) not found.");
+  }
+  const audioUrl = audioFormat.url;
+
   const soundFileData = await processAudio(
-    videoInfo.url,
+    audioUrl,
     from,
     duration,
     soundFilename,
     isPreview
   );
+
   const thumbnailFileData = await processThumbnail(
     thumbnailUrl,
     thumbnailFilename,

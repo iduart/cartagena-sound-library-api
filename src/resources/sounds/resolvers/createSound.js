@@ -37,7 +37,10 @@ const getDuration = (from, to) => {
 };
 
 const getVideoInfo = async (url) => {
-  return youtubedl(url, { dumpSingleJson: true });
+  return youtubedl(url, {
+    dumpSingleJson: true,
+    cookies: "./www.youtube.com_cookies.txt",
+  });
 };
 
 async function uploadToS3(stream, filename, bucket) {

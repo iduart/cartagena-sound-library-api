@@ -96,91 +96,99 @@ const processAudio = async (
     throw new Error("Missing videoUrl or filename");
   }
 
-  // Create a PassThrough stream to pipe ffmpeg output into.
-  const passThrough = new stream.PassThrough();
+  try {
+    // Create a PassThrough stream to pipe ffmpeg output into.
+    const passThrough = new stream.PassThrough();
 
-  ffmpeg(audioUrl)
-    .setStartTime(from)
-    .setDuration(duration)
-    .format("mp3")
-    .audioCodec("libmp3lame")
-    .on("end", () => {
-      console.log("Segment extracted successfully.");
-    })
-    .on("error", (err) => {
-      console.error("Error processing audio segment:", err);
-      passThrough.destroy(err);
-    })
-    .writeToStream(passThrough, { end: true });
+    ffmpeg(audioUrl)
+      .setStartTime(from)
+      .setDuration(duration)
+      .format("mp3")
+      .audioCodec("libmp3lame")
+      .on("end", () => {
+        console.log("Segment extracted successfully.");
+      })
+      .on("error", (err) => {
+        console.error("Error processing audio segment:", err);
+        passThrough.destroy(err);
+      })
+      .writeToStream(passThrough, { end: true });
 
-  const bucket = isPreview ? TEMP_BUCKET : SOUNDS_BUCKET;
+    const bucket = isPreview ? TEMP_BUCKET : SOUNDS_BUCKET;
 
-  return await uploadToS3(passThrough, filename, bucket);
+    return await uploadToS3(passThrough, filename, bucket);
+  } catch (error) {
+    console.log("error", error);
+  }
 };
 
 async function createSound(_, { input }) {
-  const { url, from, to, name, author, deviceId, isPreview } = input;
-  let newSound = {};
+  try {
+    const { url, from, to, name, author, deviceId, isPreview } = input;
+    let newSound = {};
 
-  const duration = getDuration(from, to);
+    const duration = getDuration(from, to);
 
-  if (!duration || duration > 7 || duration < 0) {
-    throw Error(`Invalid Duration ${duration}`);
-  }
+    if (!duration || duration > 7 || duration < 0) {
+      throw Error(`Invalid Duration ${duration}`);
+    }
 
-  if (!isPreview) {
-    newSound = new SoundModel({
+    if (!isPreview) {
+      newSound = new SoundModel({
+        name,
+        author,
+        tags: [],
+      });
+    }
+
+    const videoInfo = await getVideoInfo(url);
+    const thumbnailUrl = videoInfo.thumbnails[0];
+
+    const soundFilename = newSound._id
+      ? `${newSound._id}.mp3`
+      : `${deviceId}.mp3`;
+
+    const thumbnailFilename = newSound._id
+      ? `${newSound._id}.png`
+      : `${deviceId}.png`;
+
+    const audioFormat = videoInfo.formats.find((f) => f.format_id === "140");
+    if (!audioFormat) {
+      throw new Error("Audio-only format (140) not found.");
+    }
+    const audioUrl = audioFormat.url;
+
+    const soundFileData = await processAudio(
+      audioUrl,
+      from,
+      duration,
+      soundFilename,
+      isPreview
+    );
+
+    const thumbnailFileData = await processThumbnail(
+      thumbnailUrl,
+      thumbnailFilename,
+      isPreview
+    );
+
+    if (newSound._id) {
+      newSound.sound = soundFileData.Location;
+      newSound.thumbnail = thumbnailFileData.Location;
+      newSound.save();
+    }
+
+    return {
+      _id: newSound._id || deviceId,
       name,
+      sound: soundFileData.Location,
       author,
       tags: [],
-    });
+      thumbnail: thumbnailFileData.Location,
+    };
+  } catch (error) {
+    console.log("error", error);
   }
-
-  const videoInfo = await getVideoInfo(url);
-  const thumbnailUrl = videoInfo.thumbnails[0];
-
-  const soundFilename = newSound._id
-    ? `${newSound._id}.mp3`
-    : `${deviceId}.mp3`;
-
-  const thumbnailFilename = newSound._id
-    ? `${newSound._id}.png`
-    : `${deviceId}.png`;
-
-  const audioFormat = videoInfo.formats.find((f) => f.format_id === "140");
-  if (!audioFormat) {
-    throw new Error("Audio-only format (140) not found.");
-  }
-  const audioUrl = audioFormat.url;
-
-  const soundFileData = await processAudio(
-    audioUrl,
-    from,
-    duration,
-    soundFilename,
-    isPreview
-  );
-
-  const thumbnailFileData = await processThumbnail(
-    thumbnailUrl,
-    thumbnailFilename,
-    isPreview
-  );
-
-  if (newSound._id) {
-    newSound.sound = soundFileData.Location;
-    newSound.thumbnail = thumbnailFileData.Location;
-    newSound.save();
-  }
-
-  return {
-    _id: newSound._id || deviceId,
-    name,
-    sound: soundFileData.Location,
-    author,
-    tags: [],
-    thumbnail: thumbnailFileData.Location,
-  };
 }
 
 module.exports = createSound;

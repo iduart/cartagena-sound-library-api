@@ -39,7 +39,6 @@ const getDuration = (from, to) => {
 const getVideoInfo = async (url) => {
   return youtubedl(url, {
     dumpSingleJson: true,
-    cookies: "./www.youtube.com_cookies.txt",
     cookiesFromBrowser: true,
   });
 };

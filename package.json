@@ -32,7 +32,8 @@
     "mongoose": "^5.9.25",
     "request": "^2.88.2",
     "sharp": "^0.33.5",
-    "youtube-dl-exec": "^3.0.15"
+    "youtube-dl-exec": "^3.0.15",
+    "ytdl-core": "npm:@distube/ytdl-core@^4.16.4"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"

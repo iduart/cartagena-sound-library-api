@@ -1,4 +1,4 @@
-const youtubedl = require("youtube-dl-exec");
+const ytdl = require("ytdl-core");
 const { S3Client } = require("@aws-sdk/client-s3");
 const { Upload } = require("@aws-sdk/lib-storage");
 const stream = require("stream");
@@ -28,19 +28,13 @@ const getDuration = (from, to) => {
   const TIME_FORMAT = "hh:mm:ss.SS";
   const fromTime = moment(from, TIME_FORMAT);
   const toTime = moment(to, TIME_FORMAT);
-
   const diff = toTime.diff(fromTime);
-
   const duration = moment.duration(diff);
-
   return duration.asSeconds();
 };
 
 const getVideoInfo = async (url) => {
-  return youtubedl(url, {
-    dumpSingleJson: true,
-    cookiesFromBrowser: "chromium",
-  });
+  return await ytdl.getInfo(url);
 };
 
 async function uploadToS3(stream, filename, bucket) {
@@ -118,7 +112,6 @@ const processAudio = async (
       .writeToStream(passThrough, { end: true });
 
     const bucket = isPreview ? TEMP_BUCKET : SOUNDS_BUCKET;
-
     return await uploadToS3(passThrough, filename, bucket);
   } catch (error) {
     console.log("error", error);
@@ -131,7 +124,6 @@ async function createSound(_, { input }) {
     let newSound = {};
 
     const duration = getDuration(from, to);
-
     if (!duration || duration > 7 || duration < 0) {
       throw Error(`Invalid Duration ${duration}`);
     }
@@ -145,7 +137,8 @@ async function createSound(_, { input }) {
     }
 
     const videoInfo = await getVideoInfo(url);
-    const thumbnailUrl = videoInfo.thumbnails[0];
+
+    const thumbnailUrl = videoInfo.videoDetails.thumbnails[0].url;
 
     const soundFilename = newSound._id
       ? `${newSound._id}.mp3`
@@ -155,9 +148,9 @@ async function createSound(_, { input }) {
       ? `${newSound._id}.png`
       : `${deviceId}.png`;
 
-    const audioFormat = videoInfo.formats.find((f) => f.format_id === "140");
+    const audioFormat = videoInfo.formats.find((f) => f.itag === 140);
     if (!audioFormat) {
-      throw new Error("Audio-only format (140) not found.");
+      throw new Error("Audio-only format (itag 140) not found.");
     }
     const audioUrl = audioFormat.url;
 

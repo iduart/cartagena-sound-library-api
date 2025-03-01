@@ -44,10 +44,10 @@ const getDuration = (from, to) => {
   return duration.asSeconds();
 };
 
-const cookiesArray = parseCookieHeader(COOKIE_HEADER);
+const cookies = [{ name: "cookie", value: COOKIE_HEADER }];
 
 // Create an agent using the new cookie format
-const agent = ytdl.createAgent(cookiesArray);
+const agent = ytdl.createAgent(cookies);
 
 const getVideoInfo = async (url) => {
   try {

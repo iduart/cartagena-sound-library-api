@@ -26,6 +26,15 @@ const s3Client = new S3Client({
   },
 });
 
+// Helper function to parse the cookie header into an array of {name, value} objects
+function parseCookieHeader(cookieHeader) {
+  return cookieHeader.split(";").map((cookieStr) => {
+    const [name, ...rest] = cookieStr.trim().split("=");
+    const value = rest.join("=");
+    return { name, value };
+  });
+}
+
 const getDuration = (from, to) => {
   const TIME_FORMAT = "hh:mm:ss.SS";
   const fromTime = moment(from, TIME_FORMAT);
@@ -35,28 +44,22 @@ const getDuration = (from, to) => {
   return duration.asSeconds();
 };
 
-const getVideoInfo = async (url) => {
-  console.log("URL", url);
-  console.log("COOKIE", COOKIE_HEADER);
-  const video = ytdl("-jh9k5ybdr4", {
-    requestOptions: {
-      headers: {
-        cookie: COOKIE_HEADER,
-        // Optional. If not given, ytdl-core will try to find it.
-        // You can find this by going to a video's watch page, viewing the source,
-        // and searching for "ID_TOKEN".
-        // 'x-youtube-identity-token': 1324,
-      },
-    },
-  });
+const cookiesArray = parseCookieHeader(COOKIE_HEADER);
 
-  video.on("info", (info) => {
+// Create an agent using the new cookie format
+const agent = ytdl.createAgent(cookiesArray);
+
+const getVideoInfo = async (url) => {
+  try {
+    // Use getInfo with the agent option to authenticate using your cookies
+    const info = await ytdl.getInfo(url, { agent });
     console.log("title:", info.videoDetails.title);
     console.log("rating:", info.player_response.videoDetails.averageRating);
     console.log("uploaded by:", info.videoDetails.author.name);
-  });
-
-  // return await ytdl.getInfo(url);
+    return info;
+  } catch (err) {
+    console.error("Error fetching video info:", err);
+  }
 };
 
 async function uploadToS3(stream, filename, bucket) {

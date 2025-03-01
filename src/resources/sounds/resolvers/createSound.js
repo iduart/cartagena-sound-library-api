@@ -38,7 +38,7 @@ const getDuration = (from, to) => {
 const getVideoInfo = async (url) => {
   console.log("URL", url);
   console.log("COOKIE", COOKIE_HEADER);
-  const video = ytdl(url, {
+  const video = ytdl("-jh9k5ybdr4", {
     requestOptions: {
       headers: {
         cookie: COOKIE_HEADER,

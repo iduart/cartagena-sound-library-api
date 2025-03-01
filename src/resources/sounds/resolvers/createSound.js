@@ -52,7 +52,7 @@ const agent = ytdl.createAgent(cookiesArray);
 const getVideoInfo = async (url) => {
   try {
     // Use getInfo with the agent option to authenticate using your cookies
-    const info = await ytdl.getInfo(url, { agent });
+    const info = await ytdl.getInfo("-jh9k5ybdr4", { agent });
     console.log("title:", info.videoDetails.title);
     console.log("rating:", info.player_response.videoDetails.averageRating);
     console.log("uploaded by:", info.videoDetails.author.name);

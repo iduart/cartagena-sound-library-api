@@ -37,6 +37,7 @@ const getDuration = (from, to) => {
 const getVideoInfo = async (url) => {
   try {
     const cookies = JSON.parse(fs.readFileSync("cookies.json"));
+    console.log("cookies", cookies);
     const agent = ytdl.createAgent(cookies);
     return ytdl.getInfo(url, { agent });
   } catch (err) {

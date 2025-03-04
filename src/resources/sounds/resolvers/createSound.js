@@ -68,7 +68,7 @@ const getVideoInfo = async (url) => {
       },
       {
         domain: ".youtube.com",
-        expirationDate: 1772656711.353582,
+        expirationDate: 1772660312.932212,
         hostOnly: false,
         httpOnly: true,
         name: "__Secure-1PSIDCC",
@@ -78,12 +78,12 @@ const getVideoInfo = async (url) => {
         session: false,
         storeId: "0",
         value:
-          "AKEyXzULmfnL9SZlr4FUTg_R40VIna5rATmMRDiiZb9f_l1x_fBFvW7oSa2OTSyKqdi3tyoD3w",
+          "AKEyXzUG4B3PDMMDwy-hIHAD2Rt7erfkxX-6Soy4Qn2Wo7-jxYXGLGOLT7vESHS1YWcYyciusA",
         id: 3,
       },
       {
         domain: ".youtube.com",
-        expirationDate: 1772656377.012997,
+        expirationDate: 1772659988.845393,
         hostOnly: false,
         httpOnly: true,
         name: "__Secure-1PSIDTS",
@@ -93,7 +93,7 @@ const getVideoInfo = async (url) => {
         session: false,
         storeId: "0",
         value:
-          "sidts-CjEBEJ3XV9BnzpS6qEq3NGbHSIe-YFfuUzxPrisqk2V6PW_T6JT0fCiVdxw2FnJee_JKEAA",
+          "sidts-CjEBEJ3XV_Dq8AfD4FllYxvMUK338tWaN91FGTm6snI3eAFmWdMEsnUyGN_OWfJH9_XeEAA",
         id: 4,
       },
       {
@@ -127,7 +127,7 @@ const getVideoInfo = async (url) => {
       },
       {
         domain: ".youtube.com",
-        expirationDate: 1772656711.353665,
+        expirationDate: 1772660312.932372,
         hostOnly: false,
         httpOnly: true,
         name: "__Secure-3PSIDCC",
@@ -137,12 +137,12 @@ const getVideoInfo = async (url) => {
         session: false,
         storeId: "0",
         value:
-          "AKEyXzVUa89rNVWEm5esCd45CHWJJa32073l32AevF9tvwfXqSiycEuZ-5jg-0wPM7pfkoVXGNU",
+          "AKEyXzWItggk65khHOLiq9lSnSyfaLSE1ky_MDxvNo5BFYEMnJdWIE9Re-1ws6_S9nsJLYLsfzI",
         id: 7,
       },
       {
         domain: ".youtube.com",
-        expirationDate: 1772656377.013606,
+        expirationDate: 1772659988.84642,
         hostOnly: false,
         httpOnly: true,
         name: "__Secure-3PSIDTS",
@@ -152,7 +152,7 @@ const getVideoInfo = async (url) => {
         session: false,
         storeId: "0",
         value:
-          "sidts-CjEBEJ3XV9BnzpS6qEq3NGbHSIe-YFfuUzxPrisqk2V6PW_T6JT0fCiVdxw2FnJee_JKEAA",
+          "sidts-CjEBEJ3XV_Dq8AfD4FllYxvMUK338tWaN91FGTm6snI3eAFmWdMEsnUyGN_OWfJH9_XeEAA",
         id: 8,
       },
       {
@@ -200,7 +200,7 @@ const getVideoInfo = async (url) => {
       },
       {
         domain: ".youtube.com",
-        expirationDate: 1775680710.870273,
+        expirationDate: 1775684009.84254,
         hostOnly: false,
         httpOnly: false,
         name: "PREF",
@@ -243,7 +243,7 @@ const getVideoInfo = async (url) => {
       },
       {
         domain: ".youtube.com",
-        expirationDate: 1772656711.353386,
+        expirationDate: 1772660312.930748,
         hostOnly: false,
         httpOnly: false,
         name: "SIDCC",
@@ -253,7 +253,7 @@ const getVideoInfo = async (url) => {
         session: false,
         storeId: "0",
         value:
-          "AKEyXzVUxTto9n7s41b2g4EMwu4umWORno9xKxHhS5wvbz8niVGIdVwBAx8u5Vrc6og9161svg",
+          "AKEyXzUepw0H8bXAGPp544oLblrJkspe-YeNWb1fR4ObusXoyRgJIjF2V42LZ88n_rGhM2hztQ",
         id: 15,
       },
       {
@@ -270,23 +270,8 @@ const getVideoInfo = async (url) => {
         value: "ALiHGNCVWenymm8-p",
         id: 16,
       },
-      {
-        domain: ".youtube.com",
-        expirationDate: 1741120715,
-        hostOnly: false,
-        httpOnly: false,
-        name: "ST-xuwub9",
-        path: "/",
-        sameSite: "unspecified",
-        secure: false,
-        session: false,
-        storeId: "0",
-        value:
-          "session_logininfo=AFmmF2swRQIgFnrbbJjXxC9cAvZuh1Yv1svtZfJvilXExEw4P7ZjursCIQCVMWoVrzZnlKaLJUsObLOUQ0S_sRaUUpFpEVJouvXCww%3AQUQ3MjNmd2haQ1Z5S1cxMHZNaC11SGMxVmhTN1pYb19NQUVTbkN6U1lwTU5qNnNpQ3J4anMyRElURmxULXRSZTB3QUI1T2MyLUk1SWxUc0lLbTBHRlJTRDBoUExzcTY2NDhtWVNzSm9RcGtqZkVhUnRqajNGOVdmR2Q2VlVkb1FwLVpaUDRJT2NNYVhvbWtlSElQNWpRaHRKVUdjalVyYm5R",
-        id: 17,
-      },
     ]);
-    return ytdl.getInfo("MwuKZEbqugs", { agent });
+    return ytdl.getInfo(url, { agent });
   } catch (err) {
     console.error("Error fetching video info:", err);
   }

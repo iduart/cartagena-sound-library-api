@@ -9,9 +9,7 @@ const request = require("request");
 const moment = require("moment");
 const SoundModel = require("../sound.model");
 
-const agent = ytdl.createAgent(
-  JSON.parse(fs.readFileSync("../../../cookies.json"))
-);
+const agent = ytdl.createAgent(JSON.parse(fs.readFileSync("cookies.json")));
 
 const {
   TEMP_BUCKET,

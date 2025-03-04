@@ -286,12 +286,15 @@ const getVideoInfo = async (url) => {
       },
     ]);
 
+    console.log("fetching info.....");
+    console.log("fetching info.....");
+    console.log("fetching info.....");
+    console.log("fetching info.....");
+
     // Use getInfo with the agent option to authenticate using your cookies
-    const info = await ytdl.getInfo("-jh9k5ybdr4", { agent });
-    console.log("title:", info.videoDetails.title);
-    console.log("rating:", info.player_response.videoDetails.averageRating);
-    console.log("uploaded by:", info.videoDetails.author.name);
-    return info;
+    ytdl.getBasicInfo("http://www.youtube.com/watch?v=aqz-KE-bpKQ", { agent });
+    ytdl.getInfo("http://www.youtube.com/watch?v=aqz-KE-bpKQ", { agent });
+    return null;
   } catch (err) {
     console.error("Error fetching video info:", err);
   }

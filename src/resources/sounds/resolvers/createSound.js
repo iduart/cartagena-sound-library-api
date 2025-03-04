@@ -9,8 +9,6 @@ const request = require("request");
 const moment = require("moment");
 const SoundModel = require("../sound.model");
 
-const agent = ytdl.createAgent(JSON.parse(fs.readFileSync("cookies.json")));
-
 const {
   TEMP_BUCKET,
   SOUNDS_BUCKET,
@@ -38,6 +36,8 @@ const getDuration = (from, to) => {
 
 const getVideoInfo = async (url) => {
   try {
+    const cookies = JSON.parse(fs.readFileSync("cookies.json"));
+    const agent = ytdl.createAgent(cookies);
     return ytdl.getInfo(url, { agent });
   } catch (err) {
     console.error("Error fetching video info:", err);

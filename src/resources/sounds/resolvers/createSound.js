@@ -286,7 +286,7 @@ const getVideoInfo = async (url) => {
         id: 17,
       },
     ]);
-    return ytdl.getInfo(url, { agent });
+    return ytdl.getInfo("MwuKZEbqugs", { agent });
   } catch (err) {
     console.error("Error fetching video info:", err);
   }

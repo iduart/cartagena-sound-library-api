@@ -57,7 +57,7 @@ const agent = ytdl.createAgent([
   },
   {
     domain: ".youtube.com",
-    expirationDate: 1772728801.384426,
+    expirationDate: 1772995612.476376,
     hostOnly: false,
     httpOnly: true,
     name: "__Secure-1PSIDCC",
@@ -67,12 +67,12 @@ const agent = ytdl.createAgent([
     session: false,
     storeId: "0",
     value:
-      "AKEyXzWIfrKmrN_RmUmhbDSCupq7fZ73HzDj4CtP-g7w4V5wrHykqH9ftA0HSdYURnVHzOcRRQ",
+      "AKEyXzVa6lzbmOAw2VbpLm6k8yugOtraYCOWZuK2WYIxu9Cz7qM1e7tsO-pogDV5uLsBBvRT0A",
     id: 3,
   },
   {
     domain: ".youtube.com",
-    expirationDate: 1772728476.309419,
+    expirationDate: 1772995551.468127,
     hostOnly: false,
     httpOnly: true,
     name: "__Secure-1PSIDTS",
@@ -82,7 +82,7 @@ const agent = ytdl.createAgent([
     session: false,
     storeId: "0",
     value:
-      "sidts-CjEBEJ3XV9D5pNUcHUIRgCFYUOCdp8ndicVAHpivuTGqh7LxNElX6H31z7wXJIPjg8xUEAA",
+      "sidts-CjEBEJ3XVzpaO7aQ8QOjykJ229E37zdL61yyIHPU9soSN2lFUcowiUGj_KVFdbYBdljOEAA",
     id: 4,
   },
   {
@@ -116,7 +116,7 @@ const agent = ytdl.createAgent([
   },
   {
     domain: ".youtube.com",
-    expirationDate: 1772728801.384491,
+    expirationDate: 1772995612.476419,
     hostOnly: false,
     httpOnly: true,
     name: "__Secure-3PSIDCC",
@@ -126,12 +126,12 @@ const agent = ytdl.createAgent([
     session: false,
     storeId: "0",
     value:
-      "AKEyXzUpt45HALMitfolAz46KCr5dvbjRYGMrphjuHFJiwfG30cIVRqq8B9I4vzK03iyg-thASI",
+      "AKEyXzVEXniI4PRFYu2KM_HDF1nr424eEq2hGoayhnFdMKwT4k7aYHiCNpn8TzlkPPjpMTfeSNA",
     id: 7,
   },
   {
     domain: ".youtube.com",
-    expirationDate: 1772728476.309764,
+    expirationDate: 1772995551.468412,
     hostOnly: false,
     httpOnly: true,
     name: "__Secure-3PSIDTS",
@@ -141,7 +141,7 @@ const agent = ytdl.createAgent([
     session: false,
     storeId: "0",
     value:
-      "sidts-CjEBEJ3XV9D5pNUcHUIRgCFYUOCdp8ndicVAHpivuTGqh7LxNElX6H31z7wXJIPjg8xUEAA",
+      "sidts-CjEBEJ3XVzpaO7aQ8QOjykJ229E37zdL61yyIHPU9soSN2lFUcowiUGj_KVFdbYBdljOEAA",
     id: 8,
   },
   {
@@ -189,7 +189,7 @@ const agent = ytdl.createAgent([
   },
   {
     domain: ".youtube.com",
-    expirationDate: 1775752799.028849,
+    expirationDate: 1776019611.770012,
     hostOnly: false,
     httpOnly: false,
     name: "PREF",
@@ -232,7 +232,7 @@ const agent = ytdl.createAgent([
   },
   {
     domain: ".youtube.com",
-    expirationDate: 1772728801.384251,
+    expirationDate: 1772995612.476284,
     hostOnly: false,
     httpOnly: false,
     name: "SIDCC",
@@ -242,7 +242,7 @@ const agent = ytdl.createAgent([
     session: false,
     storeId: "0",
     value:
-      "AKEyXzWK-75HMD2HUU6fFZqPgDmdkfetPH4Cxq8mb1xoEi-yCr14SVzUjmlSxOg4JgGtFvkceg",
+      "AKEyXzV9qqnIuXj5_eo-Mo9SBn9oepfzaz37EKh9l0Prr0m0duzXvavKjBMDwo93Z-NSsp0Etw",
     id: 15,
   },
   {
@@ -258,6 +258,36 @@ const agent = ytdl.createAgent([
     storeId: "0",
     value: "ALiHGNCVWenymm8-p",
     id: 16,
+  },
+  {
+    domain: ".youtube.com",
+    expirationDate: 1741459616,
+    hostOnly: false,
+    httpOnly: false,
+    name: "ST-tladcw",
+    path: "/",
+    sameSite: "unspecified",
+    secure: false,
+    session: false,
+    storeId: "0",
+    value:
+      "session_logininfo=AFmmF2swRQIgFnrbbJjXxC9cAvZuh1Yv1svtZfJvilXExEw4P7ZjursCIQCVMWoVrzZnlKaLJUsObLOUQ0S_sRaUUpFpEVJouvXCww%3AQUQ3MjNmd2haQ1Z5S1cxMHZNaC11SGMxVmhTN1pYb19NQUVTbkN6U1lwTU5qNnNpQ3J4anMyRElURmxULXRSZTB3QUI1T2MyLUk1SWxUc0lLbTBHRlJTRDBoUExzcTY2NDhtWVNzSm9RcGtqZkVhUnRqajNGOVdmR2Q2VlVkb1FwLVpaUDRJT2NNYVhvbWtlSElQNWpRaHRKVUdjalVyYm5R",
+    id: 17,
+  },
+  {
+    domain: ".youtube.com",
+    expirationDate: 1741459617,
+    hostOnly: false,
+    httpOnly: false,
+    name: "ST-xuwub9",
+    path: "/",
+    sameSite: "unspecified",
+    secure: false,
+    session: false,
+    storeId: "0",
+    value:
+      "session_logininfo=AFmmF2swRQIgFnrbbJjXxC9cAvZuh1Yv1svtZfJvilXExEw4P7ZjursCIQCVMWoVrzZnlKaLJUsObLOUQ0S_sRaUUpFpEVJouvXCww%3AQUQ3MjNmd2haQ1Z5S1cxMHZNaC11SGMxVmhTN1pYb19NQUVTbkN6U1lwTU5qNnNpQ3J4anMyRElURmxULXRSZTB3QUI1T2MyLUk1SWxUc0lLbTBHRlJTRDBoUExzcTY2NDhtWVNzSm9RcGtqZkVhUnRqajNGOVdmR2Q2VlVkb1FwLVpaUDRJT2NNYVhvbWtlSElQNWpRaHRKVUdjalVyYm5R",
+    id: 18,
   },
 ]);
 

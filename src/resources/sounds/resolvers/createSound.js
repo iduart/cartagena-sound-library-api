@@ -177,7 +177,9 @@ async function createSound(_, { input }) {
       ? `${newSound._id}.png`
       : `${deviceId}.png`;
 
-    const audioFormat = videoInfo.formats.find((f) => f.itag === 140);
+    const audioFormat = videoInfo.formats.find(
+      (f) => f.acodec !== "none" && f.vcodec !== "none" && f.url
+    );
     if (!audioFormat) {
       throw new Error("Audio-only format (itag 140) not found.");
     }

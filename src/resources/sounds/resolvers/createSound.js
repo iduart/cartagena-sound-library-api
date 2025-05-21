@@ -138,7 +138,8 @@ const processAudio = async (
         console.error("Error processing audio segment:", err);
         passThrough.destroy(err);
       })
-      .writeToStream(passThrough, { end: true });
+      .writeToStream(passThrough, { end: true })
+      .timeout(60000);
 
     const bucket = isPreview ? TEMP_BUCKET : SOUNDS_BUCKET;
     return await uploadToS3(passThrough, filename, bucket);

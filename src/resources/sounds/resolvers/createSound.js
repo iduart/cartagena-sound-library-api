@@ -8,6 +8,7 @@ const sharp = require("sharp");
 const request = require("request");
 const moment = require("moment");
 const SoundModel = require("../sound.model");
+const youtubedl = require("youtube-dl-exec");
 
 const {
   TEMP_BUCKET,
@@ -302,7 +303,14 @@ const getDuration = (from, to) => {
 
 const getVideoInfo = async (url) => {
   try {
-    return ytdl.getInfo(url, { agent });
+    // return ytdl.getInfo(url, { agent });
+    youtubedl("https://www.youtube.com/watch?v=6xKWiCMKKJg", {
+      dumpSingleJson: true,
+      noCheckCertificates: true,
+      noWarnings: true,
+      preferFreeFormats: true,
+      addHeader: ["referer:youtube.com", "user-agent:googlebot"],
+    }).then((output) => console.log("====INFO====", output));
   } catch (err) {
     console.error("Error fetching video info:", err);
   }
@@ -411,50 +419,54 @@ async function createSound(_, { input }) {
 
     console.log("videoInfo", videoInfo);
 
-    const thumbnailUrl = videoInfo.videoDetails.thumbnails[0].url;
-
-    const soundFilename = newSound._id
-      ? `${newSound._id}.mp3`
-      : `${deviceId}.mp3`;
-
-    const thumbnailFilename = newSound._id
-      ? `${newSound._id}.png`
-      : `${deviceId}.png`;
-
-    const audioFormat = videoInfo.formats.find((f) => f.itag === 140);
-    if (!audioFormat) {
-      throw new Error("Audio-only format (itag 140) not found.");
-    }
-    const audioUrl = audioFormat.url;
-
-    const soundFileData = await processAudio(
-      audioUrl,
-      from,
-      duration,
-      soundFilename,
-      isPreview
-    );
-
-    const thumbnailFileData = await processThumbnail(
-      thumbnailUrl,
-      thumbnailFilename,
-      isPreview
-    );
-
-    if (newSound._id) {
-      newSound.sound = soundFileData.Location;
-      newSound.thumbnail = thumbnailFileData.Location;
-      newSound.save();
-    }
-
     return {
-      _id: newSound._id || deviceId,
-      name,
-      sound: soundFileData.Location,
-      author,
-      tags: [],
-      thumbnail: thumbnailFileData.Location,
+      _id: "123",
     };
+
+    // const thumbnailUrl = videoInfo.videoDetails.thumbnails[0].url;
+
+    // const soundFilename = newSound._id
+    //   ? `${newSound._id}.mp3`
+    //   : `${deviceId}.mp3`;
+
+    // const thumbnailFilename = newSound._id
+    //   ? `${newSound._id}.png`
+    //   : `${deviceId}.png`;
+
+    // const audioFormat = videoInfo.formats.find((f) => f.itag === 140);
+    // if (!audioFormat) {
+    //   throw new Error("Audio-only format (itag 140) not found.");
+    // }
+    // const audioUrl = audioFormat.url;
+
+    // const soundFileData = await processAudio(
+    //   audioUrl,
+    //   from,
+    //   duration,
+    //   soundFilename,
+    //   isPreview
+    // );
+
+    // const thumbnailFileData = await processThumbnail(
+    //   thumbnailUrl,
+    //   thumbnailFilename,
+    //   isPreview
+    // );
+
+    // if (newSound._id) {
+    //   newSound.sound = soundFileData.Location;
+    //   newSound.thumbnail = thumbnailFileData.Location;
+    //   newSound.save();
+    // }
+
+    // return {
+    //   _id: newSound._id || deviceId,
+    //   name,
+    //   sound: soundFileData.Location,
+    //   author,
+    //   tags: [],
+    //   thumbnail: thumbnailFileData.Location,
+    // };
   } catch (error) {
     console.log("error", error);
   }

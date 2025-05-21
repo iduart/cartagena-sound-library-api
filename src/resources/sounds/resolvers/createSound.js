@@ -112,34 +112,39 @@ const processAudio = async (
   from = "00:00:00",
   duration = 7,
   filename,
-  isPreview
+  isPreview,
+  videoUrl,
+  headers,
+  cookies
 ) => {
   if (!audioUrl || !filename) {
     throw new Error("Missing videoUrl or filename");
   }
 
   try {
+    const ffmpegHeaders = Object.entries(headers)
+      .map(([key, value]) => `${key}: ${value}`)
+      .concat([`Cookie: ${cookies}`])
+      .join("\r\n");
+
     // Create a PassThrough stream to pipe ffmpeg output into.
     const passThrough = new stream.PassThrough();
 
-    ffmpeg(audioUrl)
-      .inputOptions([
-        "-headers",
-        `Referer: https://www.tiktok.com\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36\r\n`,
-      ])
+    ffmpeg(videoUrl)
+      .inputOptions(["-headers", ffmpegHeaders])
       .setStartTime(from)
       .setDuration(duration)
       .format("mp3")
       .audioCodec("libmp3lame")
-      .on("end", () => {
-        console.log("Segment extracted successfully.");
-      })
+      .on("start", (cmd) => console.log("FFmpeg started with:", cmd))
       .on("error", (err) => {
-        console.error("Error processing audio segment:", err);
+        console.error("Error processing audio segment:", err.message);
         passThrough.destroy(err);
       })
-      .writeToStream(passThrough, { end: true })
-      .timeout(60000);
+      .on("end", () => {
+        console.log("Audio segment successfully processed.");
+      })
+      .writeToStream(passThrough, { end: true });
 
     const bucket = isPreview ? TEMP_BUCKET : SOUNDS_BUCKET;
     return await uploadToS3(passThrough, filename, bucket);
@@ -190,12 +195,24 @@ async function createSound(_, { input }) {
     }
     const audioUrl = audioFormat.url;
 
+    const download = videoInfo.requested_downloads?.[0];
+    if (!download?.url) {
+      throw new Error("No downloadable URL found in requested_downloads.");
+    }
+
+    const videoUrl = download.url;
+    const headers = download.http_headers || {};
+    const cookies = download.cookies || "";
+
     const soundFileData = await processAudio(
       audioUrl,
       from,
       duration,
       soundFilename,
-      isPreview
+      isPreview,
+      videoUrl,
+      headers,
+      cookies
     );
 
     const thumbnailFileData = await processThumbnail(

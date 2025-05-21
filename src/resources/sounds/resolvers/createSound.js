@@ -49,7 +49,13 @@ const getDuration = (from, to) => {
 const getVideoInfo = async (url) => {
   try {
     return youtubedl(
-      "https://www.tiktok.com/@lmp_edit7/video/7495325207717072150"
+      "https://www.tiktok.com/@lmp_edit7/video/7495325207717072150",
+      {
+        dumpSingleJson: true,
+        noCheckCertificates: true,
+        noWarnings: true,
+        preferFreeFormats: true,
+      }
     );
   } catch (err) {
     console.error("Error fetching video info:", err);

@@ -167,7 +167,7 @@ async function createSound(_, { input }) {
 
     console.log("videoInfo", videoInfo);
 
-    const thumbnailUrl = videoInfo.videoDetails.thumbnails[0].url;
+    const thumbnailUrl = videoInfo.thumbnail;
 
     const soundFilename = newSound._id
       ? `${newSound._id}.mp3`

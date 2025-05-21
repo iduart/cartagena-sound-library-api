@@ -307,7 +307,6 @@ const getVideoInfo = async (url) => {
     youtubedl("https://www.youtube.com/watch?v=6xKWiCMKKJg", {
       dumpSingleJson: true,
       noCheckCertificates: true,
-      cookiesFromBrowser: "chrome",
       noWarnings: true,
       preferFreeFormats: true,
       addHeader: ["referer:youtube.com", "user-agent:googlebot"],

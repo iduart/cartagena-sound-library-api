@@ -304,7 +304,7 @@ const getDuration = (from, to) => {
 const getVideoInfo = async (url) => {
   try {
     // return ytdl.getInfo(url, { agent });
-    youtubedl("https://www.youtube.com/watch?v=6xKWiCMKKJg", {
+    youtubedl("https://www.tiktok.com/@lmp_edit7/video/7495325207717072150", {
       dumpSingleJson: true,
       noCheckCertificates: true,
       noWarnings: true,

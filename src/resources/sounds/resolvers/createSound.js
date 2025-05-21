@@ -7,6 +7,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const sharp = require("sharp");
 const request = require("request");
 const moment = require("moment");
+const youtubedl = require("youtube-dl-exec");
 const SoundModel = require("../sound.model");
 
 const {
@@ -34,9 +35,22 @@ const getDuration = (from, to) => {
   return duration.asSeconds();
 };
 
+// const getVideoInfo = (url) => {
+//   return new Promise((resolve, reject) => {
+//     youtubedl.getInfo(url, (err, info) => {
+//       if (err) {
+//         reject(err);
+//       }
+//       resolve(info);
+//     });
+//   });
+// };
+
 const getVideoInfo = async (url) => {
   try {
-    return ytdl.getInfo(url);
+    return youtubedl(
+      "https://www.tiktok.com/@lmp_edit7/video/7495325207717072150"
+    );
   } catch (err) {
     console.error("Error fetching video info:", err);
   }

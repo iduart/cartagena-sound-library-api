@@ -1,0 +1,24 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: ec2-sim/Dockerfile
+      platforms:
+        - linux/amd64
+    platform: linux/amd64
+    container_name: csl-api-ec2
+    env_file:
+      - ../.env
+    environment:
+      # The Mac's mongod, reachable from inside the container.
+      MONGO_HOST: host.docker.internal
+      MONGO_USER: ""
+      MONGO_PASSWORD: ""
+      PORT: "8000"
+    # 0.0.0.0 so a phone or simulator on the LAN can reach it the same way it
+    # reaches the real EC2 box.
+    ports:
+      - "0.0.0.0:8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped

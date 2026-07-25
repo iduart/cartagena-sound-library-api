@@ -1,6 +1,7 @@
 require('dotenv').config();
 const server = require('./server');
 const mongoose = require('mongoose');
+const checkYtdlpRuntime = require('./resources/sounds/ytdlpPreflight');
 
 const {
   PORT,
@@ -32,6 +33,9 @@ async function main() {
 
     const port = PORT || 8000;
     server.listen(port).then(({ url }) => console.log(`Server running at ${ url } `));
+
+    // Non-blocking: reports whether YouTube extraction is healthy on this host.
+    checkYtdlpRuntime();
   } catch (err) {
     // Emit the error and stop the server
     console.error(err);

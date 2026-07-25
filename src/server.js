@@ -37,6 +37,15 @@ const mainTypes = gql`
   }
 `;
 
+// Caddy terminates TLS and proxies to localhost, so req.connection always sees
+// 127.0.0.1. The real caller is the first entry of X-Forwarded-For.
+const clientIp = (req) => {
+  if (!req) return null;
+  const forwarded = req.headers['x-forwarded-for'];
+  if (forwarded) return forwarded.split(',')[0].trim();
+  return (req.connection && req.connection.remoteAddress) || null;
+};
+
 const server = new ApolloServer({
   typeDefs: [
     mainTypes,
@@ -46,6 +55,7 @@ const server = new ApolloServer({
     deviceType,
   ],
   resolvers,
+  context: ({ req }) => ({ clientIp: clientIp(req) }),
 });
 
 module.exports = server;
